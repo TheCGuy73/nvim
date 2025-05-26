@@ -7,4 +7,6 @@ vim.cmd.colorscheme "vercel"
 vim.opt.background = "dark"
 vim.opt.showmode = false
 vim.opt.showtabline = 2
-require("lualine").setup()
+
+require('mini.statusline').setup()
+
