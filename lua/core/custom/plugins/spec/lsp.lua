@@ -1,31 +1,45 @@
 return {
-  'neovim/nvim-lspconfig',
-  dependencies = { 'saghen/blink.cmp' },
-
-  opts = {
-    servers = {
-      lua_ls = {},
-      clangd = {},
-      texlab = {},
-    }
+  -- nvim-cmp setup
+  {
+    "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "L3MON4D3/LuaSnip",
+    },
+    config = function()
+      local cmp = require("cmp")
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+        },
+      })
+    end,
   },
-  config = function(_, opts)
-    local lspconfig = require('lspconfig')
-    for server, config in pairs(opts.servers) do
-      config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-      lspconfig[server].setup(config)
-    end
-  end
 
-  -- example calling setup directly for each LSP
-  --[[
-  config = function()
-    local capabilities = require('blink.cmp').get_lsp_capabilities()
-    local lspconfig = require('lspconfig')
+  -- lspconfig setup
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local lspconfig = require("lspconfig")
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-    lspconfig['lua_ls'].setup({ capabilities = capabilities })
-    lspconfig['clangd'].setup({ capabilities = capabilities })
-    lspconfig['texlab'].setup({ capabilities = capabilities })
-  end
-  ]]
+      lspconfig.clangd.setup({
+        capabilities = capabilities,
+      })
+
+      lspconfig.texlab.setup({
+        capabilities = capabilities,
+      })
+    end,
+  },
 }
