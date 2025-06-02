@@ -9,4 +9,11 @@ vim.keymap.set('n', '<M-s>', telescope.grep_string, { desc = '[S]earch current w
 vim.keymap.set('n', '<M-c>', telescope.builtin, { desc = '[B]uiltin' })
 vim.keymap.set('n', '<M-o>', telescope.lsp_document_symbols, { desc = '[O]utline' })
 vim.keymap.set('n', '<M-p>', function() telescope.find_files({ hidden = true }) end, { desc = '[.] Find hidden files' })
+<<<<<<< HEAD
 require("telescope").load_extension "file_browser"
+=======
+pcall(require('telescope').load_extension, 'file_browser')
+vim.keymap.set('n', '<M-f>', function()
+  require('telescope').extensions.file_browser.file_browser({ path = "%:p:h" })
+end, { desc = '[F]ile Browser' })
+>>>>>>> feature-test
