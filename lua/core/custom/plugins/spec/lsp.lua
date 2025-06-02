@@ -1,6 +1,4 @@
-return {
-  -- nvim-cmp setup
-  {
+  return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
@@ -24,22 +22,4 @@ return {
         },
       })
     end,
-  },
-
-  -- lspconfig setup
-  {
-    "neovim/nvim-lspconfig",
-    config = function()
-      local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      lspconfig.clangd.setup({
-        capabilities = capabilities,
-      })
-
-      lspconfig.texlab.setup({
-        capabilities = capabilities,
-      })
-    end,
-  },
-}
+  }
