@@ -23,9 +23,13 @@ return {
         if vim.fn.filereadable(compile_commands) == 1 then
           table.insert(cmd, "--compile-commands-dir=" .. vim.fn.getcwd())
         else
-          vim.schedule(function()
-            vim.notify("clangd: compile_commands.json non trovato nella directory corrente", vim.log.levels.WARN)
-          end)
+          -- Mostra il messaggio solo se il file aperto è C o C++
+          local ft = vim.bo.filetype
+          if ft == "c" or ft == "cpp" or ft == "cxx" or ft == "objc" or ft == "objcpp" then
+            vim.schedule(function()
+              vim.notify("clangd: compile_commands.json non trovato nella directory corrente", vim.log.levels.WARN)
+            end)
+          end
         end
         lspconfig.clangd.setup({
           capabilities = capabilities,
