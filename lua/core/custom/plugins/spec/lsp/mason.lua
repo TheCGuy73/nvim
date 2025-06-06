@@ -6,10 +6,7 @@ return {
     "neovim/nvim-lspconfig",
   },
   config = function()
-    -- Setup mason
     require("mason").setup()
-
-    -- Setup mason-lspconfig
     require("mason-lspconfig").setup({
       ensure_installed = { "clangd", "texlab" },
       automatic_installation = true,
@@ -25,14 +22,6 @@ return {
         local cmd = { "clangd" }
         if vim.fn.filereadable(compile_commands) == 1 then
           table.insert(cmd, "--compile-commands-dir=" .. vim.fn.getcwd())
-        else
-          -- Show message only if a C/C++ file is open
-          local ft = vim.bo.filetype
-          if ft == "c" or ft == "cpp" or ft == "cxx" or ft == "objc" or ft == "objcpp" then
-            vim.schedule(function()
-              vim.notify("clangd: compile_commands.json non trovato nella directory corrente", vim.log.levels.WARN)
-            end)
-          end
         end
         lspconfig.clangd.setup({
           cmd = cmd,
@@ -40,6 +29,21 @@ return {
       else
         lspconfig[server_name].setup({})
       end
+    end
+
+    -- Mostra warning quando apri o crei un file C/C++ e manca compile_commands.json
+    for _, event in ipairs({ "BufReadPost", "BufNewFile" }) do
+      vim.api.nvim_create_autocmd(event, {
+        pattern = { "*.c", "*.cpp", "*.cxx", "*.cc", "*.h", "*.hpp", "*.hxx", "*.m", "*.mm" },
+        callback = function()
+          local compile_commands = vim.fn.getcwd() .. "/compile_commands.json"
+          if vim.fn.filereadable(compile_commands) == 0 then
+            vim.schedule(function()
+              vim.notify("clangd: compile_commands.json non trovato nella directory corrente", vim.log.levels.WARN)
+            end)
+          end
+        end,
+      })
     end
   end,
 }
