@@ -1,25 +1,16 @@
 return {
-  "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
-  dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
-    "L3MON4D3/LuaSnip",
-  },
-  config = function()
-    local cmp = require("cmp")
-    cmp.setup({
-      snippet = {
-        expand = function(args)
-          require("luasnip").lsp_expand(args.body)
-        end,
-      },
-      mapping = cmp.mapping.preset.insert({
-        ['<CR>'] = cmp.mapping.confirm({ select = true }),
-      }),
-      sources = {
-        { name = "nvim_lsp" },
-        { name = "luasnip" },
-      },
-    })
-  end,
+  "Saghen/blink.cmp",
+  version = "1.*",
+  dependencies = { "rafamadriz/friendly-snippets" },
+  opts = {
+    keymap = { preset = "enter" }, -- Usa Enter per confermare la selezione
+    appearance = {
+      nerd_font_variant = "mono"
+    },
+    completion = { documentation = { auto_show = false } },
+    sources = {
+      default = { "lsp", "path", "snippets", "buffer" },
+    },
+    fuzzy = { implementation = "prefer_rust_with_warning" }
+  }
 }

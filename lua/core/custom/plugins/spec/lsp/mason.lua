@@ -6,16 +6,19 @@ return {
     "neovim/nvim-lspconfig",
   },
   config = function()
+    -- Setup mason
     require("mason").setup()
+
+    -- Setup mason-lspconfig
     require("mason-lspconfig").setup({
       ensure_installed = { "clangd", "texlab" },
       automatic_installation = true,
     })
 
     local lspconfig = require("lspconfig")
-    local capabilities = require("cmp_nvim_lsp").default_capabilities()
     local mason_lspconfig = require("mason-lspconfig")
 
+    -- Setup each installed server
     for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
       if server_name == "clangd" then
         local compile_commands = vim.fn.getcwd() .. "/compile_commands.json"
@@ -23,7 +26,7 @@ return {
         if vim.fn.filereadable(compile_commands) == 1 then
           table.insert(cmd, "--compile-commands-dir=" .. vim.fn.getcwd())
         else
-          -- Mostra il messaggio solo se il file aperto è C o C++
+          -- Show message only if a C/C++ file is open
           local ft = vim.bo.filetype
           if ft == "c" or ft == "cpp" or ft == "cxx" or ft == "objc" or ft == "objcpp" then
             vim.schedule(function()
@@ -32,13 +35,10 @@ return {
           end
         end
         lspconfig.clangd.setup({
-          capabilities = capabilities,
           cmd = cmd,
         })
       else
-        lspconfig[server_name].setup({
-          capabilities = capabilities,
-        })
+        lspconfig[server_name].setup({})
       end
     end
   end,
