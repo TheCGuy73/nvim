@@ -8,14 +8,13 @@ return {
   config = function()
     require("mason").setup()
     require("mason-lspconfig").setup({
-      ensure_installed = { "clangd", "texlab" },
+      ensure_installed = { "clangd", "texlab" }, -- aggiungi gdscript qui
       automatic_installation = true,
     })
 
     local lspconfig = require("lspconfig")
     local mason_lspconfig = require("mason-lspconfig")
 
-    -- Setup each installed server
     for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
       if server_name == "clangd" then
         local compile_commands = vim.fn.getcwd() .. "/compile_commands.json"
@@ -30,6 +29,11 @@ return {
         lspconfig[server_name].setup({})
       end
     end
+        lspconfig.gdscript.setup({
+      -- Puoi aggiungere qui opzioni custom se vuoi
+      -- root_dir = function() ... end,
+      -- cmd = { "godot", "--headless", "--editor", "--lsp" },
+    })
 
     -- Mostra warning quando apri o crei un file C/C++ e manca compile_commands.json
     for _, event in ipairs({ "BufReadPost", "BufNewFile" }) do
