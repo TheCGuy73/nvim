@@ -6,7 +6,7 @@ if vim.g.neovide then
     vim.g.neovide_font = "Caskaydia Cove Nerd Font Mono:h12"
 end
 vim.opt.fillchars = { eob = " " }
-vim.cmd.colorscheme "ef-deuteranopia-light"
+vim.cmd.colorscheme "cyberdream"
 
 vim.opt.showmode = false
 vim.opt.showtabline = 2
